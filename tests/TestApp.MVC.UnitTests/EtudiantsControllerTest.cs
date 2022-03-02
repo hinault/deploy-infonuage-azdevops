@@ -20,10 +20,10 @@ namespace TestApp.MVC.UnitTests
         public async Task Details_IdInexistant_Retourne_NotFound()
         {
 
-            //Etant donné
-            //Initialiser une nouvelle instance de Mock en spécifiant l'interface du service à substituer
+            //Etant donnÃ©
+            //Initialiser une nouvelle instance de Mock en spÃ©cifiant l'interface du service Ã  substituer
             var mockEtudiantsService = new Mock<IEtudiantsService>();
-            //Définir le résultat qui sere retourné lorque la fonction sera appelée
+            //DÃ©finir le rÃ©sultat qui sere retournÃ© lorque la fonction sera appelÃ©e
             mockEtudiantsService.Setup(e => e.ObtenirSelonIdAsync(It.IsAny<int>())).Returns(() => Task.FromResult<Etudiant>(null));
 
             var etudiantsController = new EtudiantsController(mockEtudiantsService.Object);
@@ -40,14 +40,14 @@ namespace TestApp.MVC.UnitTests
         [Fact]
         public async Task Details_IdExistant_Retourne_ViewResult()
         {
-            //Etant donné
+            //Etant donnÃ©
             //Initialiser un Etudiant
             var fixture = new Fixture();
             var etudiant = fixture.Create<Etudiant>();
 
-            //Initialiser une nouvelle instance de Mock en spécifiant l'interface du service à substituer
+            //Initialiser une nouvelle instance de Mock en spÃ©cifiant l'interface du service Ã  substituer
             var mockEtudiantsService = new Mock<IEtudiantsService>();
-            //Définir le résultat qui sere retourné lorque la fonction sera appelée
+            //DÃ©finir le rÃ©sultat qui sere retournÃ© lorque la fonction sera appelÃ©e
             mockEtudiantsService.Setup(e => e.ObtenirSelonIdAsync(It.IsAny<int>())).Returns(() => Task.FromResult(etudiant));
 
             var etudiantsController = new EtudiantsController(mockEtudiantsService.Object);
@@ -65,7 +65,7 @@ namespace TestApp.MVC.UnitTests
         [Fact]
         public async Task Create_EtudiantInvalide_Retourne_ViewResult()
         {
-            //Etant donné
+            //Etant donnÃ©
             var fixture = new Fixture();
             var etudiant = fixture.Create<Etudiant>();
 
@@ -91,7 +91,7 @@ namespace TestApp.MVC.UnitTests
         [Fact]
         public async Task Create_EtudiantValide_Retourne_RedirectToAction()
         {
-            //Etant donné
+            //Etant donnÃ©
             var fixture = new Fixture();
             var etudiant = fixture.Create<Etudiant>();
 
@@ -113,7 +113,7 @@ namespace TestApp.MVC.UnitTests
         [Fact]
         public async Task Index_NbelementsNulls_Retourne_ViewResult()
         {
-            //Etant donné
+            //Etant donnÃ©
             //Initialiser un Etudiant
             var fixture = new Fixture
             {
@@ -122,9 +122,9 @@ namespace TestApp.MVC.UnitTests
 
             var etudiants = fixture.CreateMany<Etudiant>();
 
-            //Initialiser une nouvelle instance de Mock en spécifiant l'interface du service à substituer
+            //Initialiser une nouvelle instance de Mock en spÃ©cifiant l'interface du service Ã  substituer
             var mockEtudiantsService = new Mock<IEtudiantsService>();
-            //Définir le résultat qui sere retourné lorque la fonction sera appelée
+            //DÃ©finir le rÃ©sultat qui sere retournÃ© lorque la fonction sera appelÃ©e
             mockEtudiantsService.Setup(e => e.ObtenirToutAsync()).Returns(() => Task.FromResult(etudiants));
 
             var etudiantsController = new EtudiantsController(mockEtudiantsService.Object);
@@ -141,7 +141,7 @@ namespace TestApp.MVC.UnitTests
         [Fact]
         public async Task Index_NbelementsNonNull_Retourne_ViewResult()
         {
-            //Etant donné
+            //Etant donnÃ©
             //Initialiser un Etudiant
             var fixture = new Fixture
             {
@@ -150,9 +150,9 @@ namespace TestApp.MVC.UnitTests
 
             var etudiants = fixture.CreateMany<Etudiant>();
 
-            //Initialiser une nouvelle instance de Mock en spécifiant l'interface du service à substituer
+            //Initialiser une nouvelle instance de Mock en spÃ©cifiant l'interface du service Ã  substituer
             var mockEtudiantsService = new Mock<IEtudiantsService>();
-            //Définir le résultat qui sere retourné lorque la fonction sera appelée
+            //DÃ©finir le rÃ©sultat qui sere retournÃ© lorque la fonction sera appelÃ©e
             mockEtudiantsService.Setup(e => e.ObtenirToutAsync()).Returns(() => Task.FromResult(etudiants));
 
             var etudiantsController = new EtudiantsController(mockEtudiantsService.Object);
@@ -173,10 +173,10 @@ namespace TestApp.MVC.UnitTests
         public async Task Edit_HttpGet_IdInexistant_Retourne_NotFound()
         {
 
-            //Etant donné
-            //Initialiser une nouvelle instance de Mock en spécifiant l'interface du service à substituer
+            //Etant donnÃ©
+            //Initialiser une nouvelle instance de Mock en spÃ©cifiant l'interface du service Ã  substituer
             var mockEtudiantsService = new Mock<IEtudiantsService>();
-            //Définir le résultat qui sere retourné lorque la fonction sera appelée
+            //DÃ©finir le rÃ©sultat qui sere retournÃ© lorque la fonction sera appelÃ©e
             mockEtudiantsService.Setup(e => e.ObtenirSelonIdAsync(It.IsAny<int>())).Returns(() => Task.FromResult<Etudiant>(null));
 
             var etudiantsController = new EtudiantsController(mockEtudiantsService.Object);
@@ -193,14 +193,14 @@ namespace TestApp.MVC.UnitTests
         [Fact]
         public async Task Edit_HttpGet_IdExistant_Retourne_ViewResult()
         {
-            //Etant donné
+            //Etant donnÃ©
             //Initialiser un Etudiant
             var fixture = new Fixture();
             var etudiant = fixture.Create<Etudiant>();
 
-            //Initialiser une nouvelle instance de Mock en spécifiant l'interface du service à substituer
+            //Initialiser une nouvelle instance de Mock en spÃ©cifiant l'interface du service Ã  substituer
             var mockEtudiantsService = new Mock<IEtudiantsService>();
-            //Définir le résultat qui sere retourné lorque la fonction sera appelée
+            //DÃ©finir le rÃ©sultat qui sere retournÃ© lorque la fonction sera appelÃ©e
             mockEtudiantsService.Setup(e => e.ObtenirSelonIdAsync(It.IsAny<int>())).Returns(() => Task.FromResult(etudiant));
 
             var etudiantsController = new EtudiantsController(mockEtudiantsService.Object);
@@ -218,7 +218,7 @@ namespace TestApp.MVC.UnitTests
         [Fact]
         public async Task Edit_HttpPost_EtudiantInvalide_Retourne_ViewResult()
         {
-            //Etant donné
+            //Etant donnÃ©
             var fixture = new Fixture();
             var etudiant = fixture.Create<Etudiant>();
 
@@ -237,6 +237,7 @@ namespace TestApp.MVC.UnitTests
             mockEtudiantsService.Verify(e => e.ModifierAsync(It.IsAny<Etudiant>()), Times.Never);
             var etudiantResult = viewResult.Model as Etudiant;
             etudiantResult.Should().Be(etudiant);
+            Assert.True(false);
         }
 
 
@@ -244,7 +245,7 @@ namespace TestApp.MVC.UnitTests
         [Fact]
         public async Task Edit_HttpPost_EtudiantValide_Retourne_RedirectToActionIndex()
         {
-            //Etant donné
+            //Etant donnÃ©
             var fixture = new Fixture();
             var etudiant = fixture.Create<Etudiant>();
 
