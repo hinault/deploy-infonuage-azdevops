@@ -59,7 +59,7 @@ stages:
   dependsOn: 'Build'
   jobs:
     - deployment : 'DeployToDev'
-      environment: 'h22-developpement'
+      environment: 'Dev'
       strategy:
         runOnce:
          deploy:
@@ -76,6 +76,34 @@ stages:
               ConnectionType: 'AzureRM'
               azureSubscription: '$(serviceConnection)'
               appType: 'webApp'
-              WebAppName: 'webapp-h22-dev-121'
+              WebAppName: 'webapp-h22-dev-123'
+              package: '$(Build.ArtifactStagingDirectory)/**/*.zip'
+             displayName: 'déploiment de application'
+
+- stage : 'DeployToProd' 
+  displayName:  'Déploiment en Prod'
+  pool:
+    vmImage: 'ubuntu-latest'
+  dependsOn: 'DeployToDev'
+  jobs:
+    - deployment : 'DeployToProd'
+      environment: 'Prod'
+      strategy:
+        runOnce:
+         deploy:
+           steps:
+           - task: DownloadBuildArtifacts@0
+             inputs:
+               buildType: 'current'
+               downloadType: 'single'
+               artifactName: 'drop'
+               downloadPath: '$(System.ArtifactsDirectory)'
+             displayName: 'Téléchargement du package'
+           - task: AzureRmWebAppDeployment@4
+             inputs:
+              ConnectionType: 'AzureRM'
+              azureSubscription: '$(serviceConnection)'
+              appType: 'webApp'
+              WebAppName: 'webapp-h22-prod-123'
               package: '$(Build.ArtifactStagingDirectory)/**/*.zip'
              displayName: 'déploiment de application'
