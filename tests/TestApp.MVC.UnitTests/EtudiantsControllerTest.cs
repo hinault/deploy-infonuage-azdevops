@@ -237,7 +237,6 @@ namespace TestApp.MVC.UnitTests
             mockEtudiantsService.Verify(e => e.ModifierAsync(It.IsAny<Etudiant>()), Times.Never);
             var etudiantResult = viewResult.Model as Etudiant;
             etudiantResult.Should().Be(etudiant);
-            Assert.True(false);
         }
 
 
