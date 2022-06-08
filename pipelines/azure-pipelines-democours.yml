@@ -18,18 +18,21 @@ steps:
     command: 'restore'
     projects: '**/*.csproj'
     feedsToUse: 'select'
+  displayName: 'Restauration des packages NuGet'
 
 - task: DotNetCoreCLI@2
   inputs:
     command: 'build'
     projects: '**/*.csproj'
     arguments: '--configuration $(buildConfiguration)'
+  displayName: 'Génération des projets'
 
 - task: DotNetCoreCLI@2
   inputs:
     command: 'test'
     projects: '**/*Tests.csproj'
     arguments: '--configuration $(buildConfiguration)'
+  displayName: 'Execution des  tests unitaires'
 
 - task: DotNetCoreCLI@2
   inputs:
