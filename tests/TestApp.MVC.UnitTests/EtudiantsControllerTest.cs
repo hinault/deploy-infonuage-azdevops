@@ -261,5 +261,27 @@ namespace TestApp.MVC.UnitTests
             redirectToActionResult.ActionName.Should().Be("Index");
             mockEtudiantsService.Verify(e => e.ModifierAsync(It.IsAny<Etudiant>()));
         }
+        
+        
+        [Fact]
+        public async Task Edit_HttpPost_EtudiantValide_Retourne_RedirectToActionIndex2()
+        {
+            //Etant donné
+            var fixture = new Fixture();
+            var etudiant = fixture.Create<Etudiant>();
+
+            var mockEtudiantsService = new Mock<IEtudiantsService>();
+            mockEtudiantsService.Setup(e => e.ModifierAsync(It.IsAny<Etudiant>()));
+
+            var etudiantsController = new EtudiantsController(mockEtudiantsService.Object);
+
+            //Quand
+            var redirectToActionResult = await etudiantsController.Edit(1, etudiant) as RedirectToActionResult;
+
+            //Alors
+            redirectToActionResult.Should().NotBeNull();
+            redirectToActionResult.ActionName.Should().Be("Post");
+            mockEtudiantsService.Verify(e => e.ModifierAsync(It.IsAny<Etudiant>()));
+        }
     }
 }
