@@ -10,6 +10,7 @@ trigger:
 variables:
   buildConfiguration: 'Release'
   serviceConnection: 'sc-azure'
+  artifactName: 'mvcapp'
 
 stages:
  - stage: 'Build'
@@ -49,7 +50,7 @@ stages:
       - task: PublishBuildArtifacts@1
         inputs:
           PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-          ArtifactName: 'mvcapp'
+          ArtifactName: $(artifactName)
           publishLocation: 'Container'
 
  - stage: 'DeployToDev'
@@ -58,28 +59,12 @@ stages:
     vmImage: 'ubuntu-latest'
    dependsOn: 'Build'
    jobs:
-     - deployment: 'DeployToDev'
-       environment: 'Dev'
-       strategy: 
-         runOnce:
-           deploy:
-             steps: 
-              - task: DownloadBuildArtifacts@1
-                inputs:
-                  buildType: 'current'
-                  downloadType: 'single'
-                  artifactName: 'mvcapp'
-                  downloadPath: '$(System.ArtifactsDirectory)'
-                displayName: 'Télécharger le package à déployer'
-
-              - task: AzureRmWebAppDeployment@4
-                inputs:
-                  ConnectionType: 'AzureRM'
-                  azureSubscription: 'sc-azure'
-                  appType: 'webApp'
-                  WebAppName: 'az-dev1-devops'
-                  packageForLinux: '$(Build.ArtifactStagingDirectory)/**/*.zip'
-                displayName: 'Déploiement sur App Service'
+     - template: templates/deploy-template.yml
+       parameters:
+         environment: 'Dev'
+         artifactName: $(artifactName)
+         serviceConnection: $(serviceConnection)
+         webAppName: 'az-dev1-devops'
 
  - stage: 'DeployToTest'
    displayName: 'Déploiement en Test'
@@ -87,28 +72,12 @@ stages:
     vmImage: 'ubuntu-latest'
    dependsOn: 'Build'
    jobs:
-     - deployment: 'DeployToTest'
-       environment: 'Test'
-       strategy: 
-         runOnce:
-           deploy:
-             steps: 
-              - task: DownloadBuildArtifacts@1
-                inputs:
-                  buildType: 'current'
-                  downloadType: 'single'
-                  artifactName: 'mvcapp'
-                  downloadPath: '$(System.ArtifactsDirectory)'
-                displayName: 'Télécharger le package à déployer'
-
-              - task: AzureRmWebAppDeployment@4
-                inputs:
-                  ConnectionType: 'AzureRM'
-                  azureSubscription: 'sc-azure'
-                  appType: 'webApp'
-                  WebAppName: 'az-test-devops'
-                  packageForLinux: '$(Build.ArtifactStagingDirectory)/**/*.zip'
-                displayName: 'Déploiement sur App Service'
+    - template: templates/deploy-template.yml
+      parameters:
+        environment: 'Test'
+        artifactName: $(artifactName)
+        serviceConnection: $(serviceConnection)
+        webAppName: 'az-test-devops'
   
  - stage: 'DeployToProd'
    displayName: 'Déploiement en Prod'
@@ -118,25 +87,9 @@ stages:
       - 'DeployToDev'
       - 'DeployToTest'
    jobs:
-     - deployment: 'DeployToProd'
-       environment: 'Prod'
-       strategy: 
-         runOnce:
-           deploy:
-             steps: 
-              - task: DownloadBuildArtifacts@1
-                inputs:
-                  buildType: 'current'
-                  downloadType: 'single'
-                  artifactName: 'mvcapp'
-                  downloadPath: '$(System.ArtifactsDirectory)'
-                displayName: 'Télécharger le package à déployer'
-
-              - task: AzureRmWebAppDeployment@4
-                inputs:
-                  ConnectionType: 'AzureRM'
-                  azureSubscription: 'sc-azure'
-                  appType: 'webApp'
-                  WebAppName: 'az-prod-devops'
-                  packageForLinux: '$(Build.ArtifactStagingDirectory)/**/*.zip'
-                displayName: 'Déploiement sur App Service'
+     - template: templates/deploy-template.yml
+       parameters:
+        environment: 'Prod'
+        artifactName: $(artifactName)
+        serviceConnection: $(serviceConnection)
+        webAppName: 'az-dev1-devops'
