@@ -56,10 +56,10 @@ stages:
    displayName: 'Déploiement en Dev'
    pool:
     vmImage: 'ubuntu-latest'
+   dependsOn: 'Build'
    jobs:
      - deployment: 'DeployToDev'
        environment: 'Dev'
-       dependsOn: 'Build'
        strategy: 
          runOnce:
            deploy:
@@ -85,10 +85,10 @@ stages:
    displayName: 'Déploiement en Test'
    pool:
     vmImage: 'ubuntu-latest'
+   dependsOn: 'Build'
    jobs:
      - deployment: 'DeployToTest'
        environment: 'Test'
-       dependsOn: 'Build'
        strategy: 
          runOnce:
            deploy:
@@ -114,10 +114,10 @@ stages:
    displayName: 'Déploiement en Prod'
    pool:
     vmImage: 'ubuntu-latest'
+   dependsOn: 'DeployToDev, DeployToTest'
    jobs:
      - deployment: 'DeployToProd'
        environment: 'Prod'
-       dependsOn: 'DeployToDev, DeployToTest'
        strategy: 
          runOnce:
            deploy:
