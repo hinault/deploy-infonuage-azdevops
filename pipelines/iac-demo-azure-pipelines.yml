@@ -4,26 +4,26 @@
 # https://aka.ms/yaml
 
 trigger:
- - none
+- none
 
 pool:
-  vmImage: ubuntu-latest
- 
+  vmImage: ubuntu-latest
+ 
 variables:
-  serviceConnection : 'sc-azure'
-  resourceGroupName: 'rg-test-devops'
-  location: 'canadacentral'
-  templateFile: '**/main.bicep'
-  webAppName: 'az-dev1-devops'
+  serviceConnection : 'sc-azure'
+  resourceGroupName: 'rg-devops'
+  location: 'canadacentral'
+  templateFile: '**/main.bicep'
+  webAppName: 'az-dev1-devops'
 
 steps:
-- task: AzureCLI@2
-  inputs:
-    azureSubscription: $(serviceConnection)
-    scriptType: bash
-    scriptLocation: inlineScript
-    inlineScript: |
-      az --version
-      az group create --name $(resourceGroupName) --location $(location)
-      az deployment group create --resource-group $(resourceGroupName) --template-file $(templateFile) --parameters appName=$(webAppName)
-'
+- task: AzureCLI@2
+  inputs:
+    azureSubscription: $(serviceConnection)
+    scriptType: bash
+    scriptLocation: inlineScript
+    inlineScript: |
+      az --version
+      az group create --name $(resourceGroupName) --location $(location)
+      az deployment group create --resource-group $(resourceGroupName) --template-file $(templateFile) --parameters appName=$(webAppName)
+  displayName: 'Environement de Dev'
