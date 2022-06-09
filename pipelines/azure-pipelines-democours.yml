@@ -114,7 +114,9 @@ stages:
    displayName: 'Déploiement en Prod'
    pool:
     vmImage: 'ubuntu-latest'
-   dependsOn: 'DeployToDev, DeployToTest'
+   dependsOn: 
+      - 'DeployToDev'
+      - 'DeployToTest'
    jobs:
      - deployment: 'DeployToProd'
        environment: 'Prod'
