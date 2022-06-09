@@ -51,3 +51,31 @@ stages:
           PathtoPublish: '$(Build.ArtifactStagingDirectory)'
           ArtifactName: 'mvcapp'
           publishLocation: 'Container'
+
+ - stage: 'DeployToDev'
+   displayName: 'Déploiement en Dev'
+   pool:
+    vmImage: 'ubuntu-latest'
+   jobs:
+     - deployment: 'DeployToDev'
+       environment: 'Dev'
+       strategy: 
+         runOnce:
+           deploy:
+             steps: 
+              - task: DownloadBuildArtifacts@1
+                inputs:
+                  buildType: 'current'
+                  downloadType: 'single'
+                  artifactName: 'mvcapp'
+                  downloadPath: '$(System.ArtifactsDirectory)'
+                displayName: 'Télécharger le package à déployer'
+
+              - task: AzureRmWebAppDeployment@4
+                inputs:
+                  ConnectionType: 'AzureRM'
+                  azureSubscription: 'sc-azure'
+                  appType: 'webApp'
+                  WebAppName: 'az-test-devops'
+                  packageForLinux: '$(System.DefaultWorkingDirectory)/**/*.zip'
+                displayName: 'Déploiement sur App Service'
