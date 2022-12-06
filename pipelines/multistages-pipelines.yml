@@ -104,6 +104,8 @@ stages:
               ConnectionType: 'AzureRM'
               azureSubscription: '$(serviceConnection)'
               appType: 'webApp'
-              WebAppName: 'webapp-h22-dev-123-test'
+              deployToSlotOrASE: true
+              WebAppName: 'webapp-h22-dev-123'
+              SlotName: 'test'
               package: '$(Build.ArtifactStagingDirectory)/**/*.zip'
              displayName: 'déploiment de application'
