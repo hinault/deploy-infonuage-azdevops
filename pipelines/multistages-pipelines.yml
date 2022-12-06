@@ -106,6 +106,7 @@ stages:
               appType: 'webApp'
               deployToSlotOrASE: true
               WebAppName: 'webapp-h22-dev-123'
+              ResourceGroupName: 'rg-test-deploy'
               SlotName: 'test'
               package: '$(Build.ArtifactStagingDirectory)/**/*.zip'
              displayName: 'déploiment de application'
