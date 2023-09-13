@@ -33,6 +33,7 @@ namespace TestApp.MVC.UnitTests
 
             //Alors
             actionResult.Should().BeOfType(typeof(NotFoundResult));
+            Assert.True(false);
 
         }
 
