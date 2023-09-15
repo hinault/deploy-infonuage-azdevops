@@ -58,11 +58,33 @@ stages:
   pool:
    vmImage: ubuntu-latest  
   jobs:
-   - job : 'DeployToDev'
-     steps:
-        - task: CmdLine@2
-          inputs:
-            script: |
-              echo Write your commands here
-              
-              echo Hello world
+   - deployment : 'DeployToDev'
+     environment: 'Dev'
+     strategy:
+      runOnce:
+        deploy:
+         steps:
+         - task: DownloadBuildArtifacts@1
+           inputs:
+             buildType: 'current'
+             downloadType: 'single'
+             artifactName: 'drop'
+             downloadPath: '$(System.ArtifactsDirectory)'
+           displayName: 'Téléchargement du package'
+        
+         - task: AzureWebApp@1
+           inputs:
+            azureSubscription: 'sc-demo-devops'
+            appType: 'webApp'
+            appName: 'webapp-demo-devops'
+            package: '$(System.ArtifactsDirectory)/**/*.zip'
+            deploymentMethod: 'auto'
+           displayName: 'Déploiement de application'
+        
+        #  - task: AzureRmWebAppDeployment@4
+        #    inputs:
+        #     ConnectionType: 'AzureRM'
+        #     azureSubscription: 'sc-demo-devops'
+        #     appType: 'webApp'
+        #     WebAppName: 'az-webapps-monitoring'
+        #     packageForLinux: '$(System.DefaultWorkingDirectory)/**/*.zip'
