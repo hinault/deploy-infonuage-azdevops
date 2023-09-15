@@ -6,44 +6,63 @@
 trigger:
 - main
 
-pool:
-  vmImage: ubuntu-latest
 
-variables:
-  buildConfiguration: 'Release'
+stages:
+- stage: 'Build'
+  displayName: 'Génération, exécution des test et publication'
+  pool:
+   vmImage: ubuntu-latest  
+  variables:
+    buildConfiguration: 'Release'
+  jobs:
+   - job : 'Build'
+     steps:
+     - task: DotNetCoreCLI@2
+       inputs:
+        command: 'restore'
+        projects: '**/*.csproj'
+        feedsToUse: 'select'
+       displayName: 'Restaurer les packages NuGet'
 
-steps:
-- task: DotNetCoreCLI@2
-  inputs:
-    command: 'restore'
-    projects: '**/*.csproj'
-    feedsToUse: 'select'
-  displayName: 'Restaurer les packages NuGet'
+     - task: DotNetCoreCLI@2
+       inputs:
+        command: 'build'
+        projects: '**/*.csproj'
+        arguments: '--configuration $(buildConfiguration)'
+       displayName: 'Génération de la solution'
 
-- task: DotNetCoreCLI@2
-  inputs:
-    command: 'build'
-    projects: '**/*.csproj'
-    arguments: '--configuration $(buildConfiguration)'
-  displayName: 'Génération de la solution'
-
-- task: DotNetCoreCLI@2
-  inputs:
-    command: 'test'
-    projects: '**/*Tests.csproj'
-    arguments: '--configuration $(buildConfiguration)'
-  displayName: 'Exécution des tests unitaires'
+     - task: DotNetCoreCLI@2
+       inputs:
+        command: 'test'
+        projects: '**/*Tests.csproj'
+        arguments: '--configuration $(buildConfiguration)'
+       displayName: 'Exécution des tests unitaires'
   
-- task: DotNetCoreCLI@2
-  inputs:
-    command: 'publish'
-    publishWebProjects: true
-    arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)'
-  displayName: 'Publication du projet'
+     - task: DotNetCoreCLI@2
+       inputs:
+        command: 'publish'
+        publishWebProjects: true
+        arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)'
+       displayName: 'Publication du projet'
 
-- task: PublishBuildArtifacts@1
-  inputs:
-    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-    ArtifactName: 'drop'
-    publishLocation: 'Container'
-  displayName: 'Publication dans Azure Pipeline'
+     - task: PublishBuildArtifacts@1
+       inputs:
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+        ArtifactName: 'drop'
+        publishLocation: 'Container'
+       displayName: 'Publication dans Azure Pipeline'
+  
+- stage: 'DeployToDev'
+  displayName: 'Déploiment en dev'
+  dependsOn: 'Build'
+  pool:
+   vmImage: ubuntu-latest  
+  jobs:
+   - job : 'DeployToDev'
+     steps:
+        - task: CmdLine@2
+          inputs:
+            script: |
+              echo Write your commands here
+              
+              echo Hello world
