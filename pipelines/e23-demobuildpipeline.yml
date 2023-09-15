@@ -81,10 +81,31 @@ stages:
             deploymentMethod: 'auto'
            displayName: 'Déploiement de application'
         
-        #  - task: AzureRmWebAppDeployment@4
-        #    inputs:
-        #     ConnectionType: 'AzureRM'
-        #     azureSubscription: 'sc-demo-devops'
-        #     appType: 'webApp'
-        #     WebAppName: 'az-webapps-monitoring'
-        #     packageForLinux: '$(System.DefaultWorkingDirectory)/**/*.zip'
+- stage: 'DeployToProd'
+  displayName: 'Déploiment en prod'
+  dependsOn: 'DeployToDev'
+  pool:
+   vmImage: ubuntu-latest  
+  jobs:
+   - deployment : 'DeployToProd'
+     environment: 'Prod'
+     strategy:
+      runOnce:
+        deploy:
+         steps:
+         - task: DownloadBuildArtifacts@1
+           inputs:
+             buildType: 'current'
+             downloadType: 'single'
+             artifactName: 'drop'
+             downloadPath: '$(System.ArtifactsDirectory)'
+           displayName: 'Téléchargement du package'
+        
+         - task: AzureWebApp@1
+           inputs:
+            azureSubscription: 'sc-demo-devops'
+            appType: 'webApp'
+            appName: 'webapp-demo-devops-prod'
+            package: '$(System.ArtifactsDirectory)/**/*.zip'
+            deploymentMethod: 'auto'
+           displayName: 'Déploiement de application'      
