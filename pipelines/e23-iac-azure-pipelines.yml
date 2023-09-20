@@ -27,5 +27,5 @@ steps:
     inlineScript: |
       az --version
       az group create --name $(rg) --location $(location)
-      az deployment group create -rg $(rg) --template-file bicep/main.bicep --parameters appName=web-demo-iac-devops
+      az deployment group create --resource-group $(rg) --template-file bicep/main.bicep --parameters appName=web-demo-iac-devops
   displayName: 'Création ressources Azure'
