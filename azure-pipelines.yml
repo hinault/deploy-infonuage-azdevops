@@ -33,21 +33,22 @@ stages:
           buildContext: '$(Build.SourcesDirectory)'
         displayName: 'Génération et push image dans registre de conteneurs'
 
-# - stage : 'DeployToDev' 
-#   displayName:  'Déploiment en Dev'
-#   pool:
-#     vmImage: 'ubuntu-latest'
-#   dependsOn: 'Build'
-#   jobs:
-#     - deployment : 'DeployToDev'
-#       environment: 'h22-developpement'
-#       strategy:
-#         runOnce:
-#          deploy:
-#            steps:
-#            - task: AzureWebAppContainer@1
-#              inputs:
-#                azureSubscription: '$(serviceConnection)'
-#                appName: '$(appName)'
-#                containers: '$(containerRegistry)/$(imageRepository):$(tag)'
-#              displayName: 'Déploiement sur Azure Web App For Container'
+- stage : 'DeployToDev' 
+  displayName:  'Déploiment en Dev'
+  pool:
+    vmImage: 'ubuntu-latest'
+  dependsOn: 'Build'
+  jobs:
+    - deployment : 'DeployToDev'
+      environment: 'dev'
+      strategy:
+        runOnce:
+         deploy:
+           steps:
+           
+           - task: AzureWebAppContainer@1
+             inputs:
+               azureSubscription: '$(serviceConnection)'
+               appName: '$(appName)'
+               containers: '$(containerRegistry)/$(imageRepository):$(tag)'
+             displayName: 'Déploiement sur Azure Web App For Container'
