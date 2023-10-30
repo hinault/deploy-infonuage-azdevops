@@ -46,6 +46,10 @@ stages:
          deploy:
            steps:
            
+           - task: Docker@2
+             inputs:
+               containerRegistry: 'sc-acr'
+               command: 'login'
            - task: AzureWebAppContainer@1
              inputs:
                azureSubscription: '$(serviceConnection)'
