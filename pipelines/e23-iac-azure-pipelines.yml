@@ -12,26 +12,65 @@ trigger:
       - bicep
 
 pool:
-  vmImage: ubuntu-latest
+  vmImage: windows-latest
 
 variables:
-  rg: 'rg-demo-iac-az'
+  rg: 'rg-tp3-devops-dev'
   location: 'canadacentral'
+  serverName: 'srv-srvmdrecrut12dev'
 
 steps:
+# - task: AzureCLI@2
+#   inputs:
+#     azureSubscription: 'test-sc-ad'
+#     scriptType: 'bash'
+#     scriptLocation: 'inlineScript'
+#     inlineScript: |
+#       az --version
+#       az group create --name $(rg) --location $(location)
+#       az deployment group create --resource-group $(rg) --template-file bicep/main.bicep --parameters appName=web-demo-iac-devops
+
+#       managedIdentityWebApp=$(az webapp identity show -n nugetpoo  -g rg-nuget --query principalId --output tsv)
+#       echo "Managed identity : $managedIdentityWebApp"
+
+#       az ad group member add --group myAzureSQLDBGroup --member-id $managedIdentityWebApp
+
+#   displayName: 'Création ressources Azure'
+
 - task: AzureCLI@2
   inputs:
     azureSubscription: 'test-sc-ad'
-    scriptType: 'bash'
+    scriptType: 'ps'
     scriptLocation: 'inlineScript'
     inlineScript: |
-      az --version
-      az group create --name $(rg) --location $(location)
-      az deployment group create --resource-group $(rg) --template-file bicep/main.bicep --parameters appName=web-demo-iac-devops
+                $ip=$(curl ipinfo.io/ip).Content.Replace("`n", "")
+                 write-host $ip
+                 az sql server firewall-rule create -g $(rg) --server $(serverName) --name Deployment --start-ip-address $ip --end-ip-address $ip
+                 
+                 $groupName = "myAzureSQLDBGroup"
+                 $sqltoken= & az account get-access-token --resource=https://database.windows.net --query accessToken --output tsv
+                
+                
+                    $databaseName = "db-emplois" 
+                    write-host  $databaseName
+                    $connectionString = "Server=tcp:$(serverName).database.windows.net,1433;Initial Catalog=$databaseName;Persist Security Info=False;MultipleActiveResultSets=False;Encrypt=True;Connection Timeout=30;"
+                    $conn = new-object system.data.SqlClient.SQLConnection($connectionString)
+                    $conn.AccessToken = $sqltoken
+                    $conn.Open()
 
-      managedIdentityWebApp=$(az webapp identity show -n nugetpoo  -g rg-nuget --query principalId --output tsv)
-      echo "Managed identity : $managedIdentityWebApp"
+                     $query = "BEGIN
+                     CREATE USER [$groupName] FROM EXTERNAL PROVIDER;
+                     ALTER ROLE db_datareader ADD MEMBER [$groupName];
+                     ALTER ROLE db_datawriter ADD MEMBER [$groupName];
+                     GRANT ALTER TO [$groupName];
+                     END"
 
-      az ad group member add --group myAzureSQLDBGroup --member-id $managedIdentityWebApp
+                    $cmd = New-Object System.Data.SqlClient.SqlCommand($query, $conn)
+                    $cmd.ExecuteNonQuery()
+                    $conn.Close()
+                  
+               
+                 az sql server firewall-rule delete -g $(rg) --server $(serverName) --name Deployment                  
+
 
   displayName: 'Création ressources Azure'
