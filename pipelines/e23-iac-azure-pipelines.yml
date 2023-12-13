@@ -51,7 +51,7 @@ steps:
                  $sqltoken= & az account get-access-token --resource=https://database.windows.net --query accessToken --output tsv
                 
                 
-                    $databaseName = "db-emplois" 
+                    $databaseName = "db-postulation" 
                     write-host  $databaseName
                     $connectionString = "Server=tcp:$(serverName).database.windows.net,1433;Initial Catalog=$databaseName;Persist Security Info=False;MultipleActiveResultSets=False;Encrypt=True;Connection Timeout=30;"
                     $conn = new-object system.data.SqlClient.SQLConnection($connectionString)
