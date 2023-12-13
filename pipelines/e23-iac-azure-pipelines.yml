@@ -59,7 +59,7 @@ steps:
                     $conn.Open()
 
                      $query = "BEGIN
-                     CREATE USER [$groupName] FROM EXTERNAL PROVIDER;
+                     #CREATE USER [$groupName] FROM EXTERNAL PROVIDER;
                      ALTER ROLE db_datareader ADD MEMBER [$groupName];
                      ALTER ROLE db_datawriter ADD MEMBER [$groupName];
                      GRANT ALTER TO [$groupName];
