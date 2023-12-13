@@ -26,8 +26,8 @@ steps:
     scriptLocation: 'inlineScript'
     inlineScript: |
       az --version
-      #az group create --name $(rg) --location $(location)
-      #az deployment group create --resource-group $(rg) --template-file bicep/main.bicep --parameters appName=web-demo-iac-devops
+      az group create --name $(rg) --location $(location)
+      az deployment group create --resource-group $(rg) --template-file bicep/main.bicep --parameters appName=web-demo-iac-devops
 
       managedIdentityWebApp=$(az webapp identity show -n nugetpoo  -g rg-nuget --query principalId --output tsv)
       echo "Managed identity : $managedIdentityWebApp"
