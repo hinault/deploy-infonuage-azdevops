@@ -30,7 +30,7 @@ steps:
       #az deployment group create --resource-group $(rg) --template-file bicep/main.bicep --parameters appName=web-demo-iac-devops
 
       managedIdentityWebApp=$(az webapp identity show -n nugetpoo  -g rg-nuget --query principalId --output tsv)
-      echo $managedIdentityWebApp
+      echo "Managed identity : $managedIdentityWebApp"
 
       az ad group member add --group myAzureSQLDBGroup --member-id $managedIdentityWebApp
 
