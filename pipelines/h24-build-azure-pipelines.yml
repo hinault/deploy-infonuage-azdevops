@@ -1,0 +1,50 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- main
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+  buildConfiguration: 'Release'
+
+steps:
+
+- task: DotNetCoreCLI@2
+  displayName: 'Restaurer les packages NuGet'
+  inputs:
+    command: 'restore'
+    projects: '*.csproj'
+    feedsToUse: 'select'
+
+- task: DotNetCoreCLI@2
+  displayName: 'Génération de la solution'
+  inputs:
+    command: 'build'
+    projects: '*.csproj'
+    arguments: '--configuration $(buildConfiguration)'
+
+- task: DotNetCoreCLI@2
+  displayName: 'Execution des tests unitaires'
+  inputs:
+    command: 'test'
+    projects: '*UnitTests.csproj'
+    arguments: '--configuration $(buildConfiguration)'
+
+- task: DotNetCoreCLI@2
+  displayName: 'publication de la solution'
+  inputs:
+    command: 'publish'
+    publishWebProjects: true
+    arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)'
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publication de artefack dans Azure Pipeline'
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: 'drop'
+    publishLocation: 'Container'
