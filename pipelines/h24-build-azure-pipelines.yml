@@ -6,45 +6,77 @@
 trigger:
 - main
 
-pool:
-  vmImage: ubuntu-latest
+stages:
+- stage: 'Build'
+  pool:
+    vmImage: ubuntu-latest
 
-variables:
-  buildConfiguration: 'Release'
+  variables:
+    buildConfiguration: 'Release'
 
-steps:
+  jobs:
 
-- task: DotNetCoreCLI@2
-  displayName: 'Restaurer les packages NuGet'
-  inputs:
-    command: 'restore'
-    projects: '**/*.csproj'
-    feedsToUse: 'select'
+   - job: 'Build'
+     steps:
+     - task: DotNetCoreCLI@2
+       displayName: 'Restaurer les packages NuGet'
+       inputs:
+        command: 'restore'
+        projects: '**/*.csproj'
+        feedsToUse: 'select'
 
-- task: DotNetCoreCLI@2
-  displayName: 'Génération de la solution'
-  inputs:
-    command: 'build'
-    projects: '**/*.csproj'
-    arguments: '--configuration $(buildConfiguration)'
+     - task: DotNetCoreCLI@2
+       displayName: 'Génération de la solution'
+       inputs:
+        command: 'build'
+        projects: '**/*.csproj'
+        arguments: '--configuration $(buildConfiguration)'
 
-- task: DotNetCoreCLI@2
-  displayName: 'Execution des tests unitaires'
-  inputs:
-    command: 'test'
-    projects: '**/*.UnitTests.csproj'
-    arguments: '--configuration $(buildConfiguration)'
+     - task: DotNetCoreCLI@2
+       displayName: 'Execution des tests unitaires'
+       inputs:
+        command: 'test'
+        projects: '**/*.UnitTests.csproj'
+        arguments: '--configuration $(buildConfiguration)'
 
-- task: DotNetCoreCLI@2
-  displayName: 'publication de la solution'
-  inputs:
-    command: 'publish'
-    publishWebProjects: true
-    arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)'
+     - task: DotNetCoreCLI@2
+       displayName: 'publication de la solution'
+       inputs:
+        command: 'publish'
+        publishWebProjects: true
+        arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)'
 
-- task: PublishBuildArtifacts@1
-  displayName: 'Publication de artefack dans Azure Pipeline'
-  inputs:
-    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-    ArtifactName: 'drop'
-    publishLocation: 'Container'
+     - task: PublishBuildArtifacts@1
+       displayName: 'Publication de artefack dans Azure Pipeline'
+       inputs:
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+        ArtifactName: 'drop'
+        publishLocation: 'Container'
+
+- stage: 'Deploy'
+  pool:
+    vmImage: ubuntu-latest
+
+  jobs:
+   - deployment: 'Build'
+     environment: 'Dev'
+     strategy:
+      runOnce:
+        deploy:
+          steps:
+          - task: DownloadBuildArtifacts@1
+            displayName: 'Télécharger artecfact pour le déploiment'
+            inputs:
+              buildType: 'current'
+              downloadType: 'single'
+              artifactName: 'drop'
+              downloadPath: '$(System.ArtifactsDirectory)'
+           
+          - task: AzureWebApp@1
+            displayName: 'Déployer dans App Service'
+            inputs:
+              azureSubscription: 'sc-azure'
+              appType: 'webApp'
+              appName: 'webapp1-b3zefn3ujccb2'
+              package: '$(System.ArtifactsDirectory)/**/*.zip'
+              deploymentMethod: 'auto'
