@@ -83,7 +83,7 @@ stages:
               deploymentMethod: 'auto'
 
 - stage: 'DeployToProd'
-  dependsOn: 'DeployToDev'
+  dependsOn: 'Build'
   pool:
     vmImage: ubuntu-latest
 
