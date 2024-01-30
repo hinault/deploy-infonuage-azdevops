@@ -1,0 +1,34 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+ branches:
+    include:
+     - main
+ paths:
+     include:
+       - bicep
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+ rg: 'rg-demo-devops'
+ location: 'canadacentral'
+ bicepfile: '**\main.bicep'
+ appName: 'app-demo-devops123'
+
+steps:
+
+- task: AzureCLI@2
+  displayName: 'Création ressources prod'
+  inputs:
+    azureSubscription: 'sc-azure'
+    scriptType: 'bash'
+    scriptLocation: 'inlineScript'
+    inlineScript: |
+      az --version
+      az group create --name $(rg) --location $(location)
+      az deployment group create --resource-group $(rg) --template-file $(bicepfile) --parameters appName=$(appName)
