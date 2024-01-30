@@ -15,7 +15,7 @@ stages:
 - stage : 'Build' 
   displayName: 'Build et execution des tests'
   jobs:
-  - template: templates/build-template.yml
+  - template: pipelines/templates/build-template.yml
     parameters:
       buildConfiguration: $(buildConfiguration)
       artifactName: $(artifactName)
@@ -25,7 +25,7 @@ stages:
   displayName: 'Déploiment en Dev'
   dependsOn: 'Build'
   jobs:
-  - template: templates/deploy-template.yml
+  - template: pipelines/templates/deploy-template.yml
     parameters:
       environment: 'Dev'
       artifactName: $(artifactName)
@@ -36,7 +36,7 @@ stages:
   displayName: 'Déploiment en Dev'
   dependsOn: 'DeployToDev'
   jobs:
-  - template: templates/deploy-template.yml
+  - template: pipelines/templates/deploy-template.yml
     parameters:
       environment: 'Prod'
       artifactName: $(artifactName)
