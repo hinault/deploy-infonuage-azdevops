@@ -1,0 +1,44 @@
+# ASP.NET Core
+# Build and test ASP.NET Core projects targeting .NET Core.
+# Add steps that run tests, create a NuGet package, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
+
+trigger:
+- none
+
+variables:
+  buildConfiguration: 'Release'
+  serviceConnection : 'sc-azure'
+  artifactName: 'drop'
+
+stages:
+- stage : 'Build' 
+  displayName: 'Build et execution des tests'
+  jobs:
+  - template: templates/build-template.yml
+    parameters:
+      buildConfiguration: $(buildConfiguration)
+      artifactName: $(artifactName)
+
+
+- stage : 'DeployToDev' 
+  displayName: 'Déploiment en Dev'
+  dependsOn: 'Build'
+  jobs:
+  - template: templates/deploy-template.yml
+    parameters:
+      environment: 'Dev'
+      artifactName: $(artifactName)
+      serviceConnection: $(serviceConnection)
+      webAppName: 'webapp1-b3zefn3ujccb2'
+
+- stage : 'DeployToProd' 
+  displayName: 'Déploiment en Dev'
+  dependsOn: 'DeployToDev'
+  jobs:
+  - template: templates/deploy-template.yml
+    parameters:
+      environment: 'Prod'
+      artifactName: $(artifactName)
+      serviceConnection: $(serviceConnection)
+      webAppName: 'app-demo-devops123'
