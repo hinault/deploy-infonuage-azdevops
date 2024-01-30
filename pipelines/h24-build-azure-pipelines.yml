@@ -53,12 +53,13 @@ stages:
         ArtifactName: 'drop'
         publishLocation: 'Container'
 
-- stage: 'Deploy'
+- stage: 'DeployToDev'
+  dependsOn: 'Build'
   pool:
     vmImage: ubuntu-latest
 
   jobs:
-   - deployment: 'Build'
+   - deployment: 'Deploy Dev'
      environment: 'Dev'
      strategy:
       runOnce:
@@ -78,5 +79,34 @@ stages:
               azureSubscription: 'sc-azure'
               appType: 'webApp'
               appName: 'webapp1-b3zefn3ujccb2'
+              package: '$(System.ArtifactsDirectory)/**/*.zip'
+              deploymentMethod: 'auto'
+
+- stage: 'DeployToProd'
+  dependsOn: 'DeployToDev'
+  pool:
+    vmImage: ubuntu-latest
+
+  jobs:
+   - deployment: 'Deploy Prod'
+     environment: 'Prod'
+     strategy:
+      runOnce:
+        deploy:
+          steps:
+          - task: DownloadBuildArtifacts@1
+            displayName: 'Télécharger artecfact pour le déploiment'
+            inputs:
+              buildType: 'current'
+              downloadType: 'single'
+              artifactName: 'drop'
+              downloadPath: '$(System.ArtifactsDirectory)'
+           
+          - task: AzureWebApp@1
+            displayName: 'Déployer dans App Service'
+            inputs:
+              azureSubscription: 'sc-azure'
+              appType: 'webApp'
+              appName: 'app-demo-devops123'
               package: '$(System.ArtifactsDirectory)/**/*.zip'
               deploymentMethod: 'auto'
