@@ -17,7 +17,7 @@ pool:
 variables:
  rg: 'rg-demo-devops'
  location: 'canadacentral'
- bicepfile: '**\main.bicep'
+ bicepfile: '**/main.bicep'
  appName: 'app-demo-devops123'
 
 steps:
