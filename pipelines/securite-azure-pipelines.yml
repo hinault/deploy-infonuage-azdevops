@@ -10,13 +10,19 @@ pool:
   vmImage: ubuntu-latest
 
 steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
+- task: DotNetCoreCLI@2
+  inputs:
+         command: 'restore'
+         projects: '**/*.csproj'
+         feedsToUse: 'select'
+  displayName: 'restaurer les packages'
 
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
+- task: DotNetCoreCLI@2
+  inputs:
+         command: 'build'
+         projects: '**/*.csproj'
+         arguments: '--configuration $(buildConfiguration)'
+  displayName: 'Génération de la solution'
 
 - task: DotNetCoreCLI@2
   displayName: 'Lister les packages qui ne sont pas à jour'
