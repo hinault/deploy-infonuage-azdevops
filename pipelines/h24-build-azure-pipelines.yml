@@ -53,23 +53,6 @@ stages:
         ArtifactName: 'drop'
         publishLocation: 'Container'
     
-     - task: WhiteSource@21
-       inputs:
-        cwd: '$(System.DefaultWorkingDirectory)'
-        projectName: 'TestP'
-    
-     - task: DotNetCoreCLI@2
-       displayName: 'dotnet list package --outdated'
-       inputs:
-        command: 'custom'
-        custom: 'list'
-        arguments: 'package --outdated'
-     - task: DotNetCoreCLI@2
-       displayName: 'dotnet list package --vulnerable'
-       inputs:
-        command: 'custom'
-        custom: 'list'
-        arguments: 'package --vulnerable'
 
 - stage: 'DeployToDev'
   dependsOn: 'Build'
