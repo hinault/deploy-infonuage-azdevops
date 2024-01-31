@@ -37,3 +37,8 @@ steps:
     command: 'custom'
     custom: 'list'
     arguments: 'package --vulnerable'
+
+- task: WhiteSource@21
+  inputs:
+    cwd: '$(System.DefaultWorkingDirectory)'
+    projectName: 'DemoSecurite'
