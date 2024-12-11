@@ -8,7 +8,7 @@ namespace TestApp.ApplicationCore.UnitTests
         [Fact]
         public void Test1()
         {
-            Assert.True(true);
+            Assert.True(false);
         }
     }
 }
