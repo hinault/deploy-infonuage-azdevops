@@ -82,3 +82,34 @@ stages:
                WebAppName: 'demo456'
                package: '$(System.ArtifactsDirectory)/**/*.zip'
              displayName: 'Deploiement application'
+             
+- stage : 'DeployToProd' 
+  displayName:  'Déploiment en Production'
+  pool:
+    vmImage: 'ubuntu-latest'
+  dependsOn: 'DeployToDev'
+  jobs:
+    - deployment : 'DeployToProd'
+      environment: 'Dev'
+      strategy:
+        runOnce:
+         deploy:
+           steps:
+           
+           - task: DownloadBuildArtifacts@0
+             inputs:
+               buildType: 'current'
+               downloadType: 'single'
+               artifactName: 'drop'
+               downloadPath: '$(System.ArtifactsDirectory)'
+             displayName: 'Téléchargement du package'
+          
+
+           - task: AzureRmWebAppDeployment@4
+             inputs:
+               ConnectionType: 'AzureRM'
+               azureSubscription: 'sc-azure'
+               appType: 'webApp'
+               WebAppName: 'demoprod1245'
+               package: '$(System.ArtifactsDirectory)/**/*.zip'
+             displayName: 'Deploiement application'
