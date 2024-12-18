@@ -90,7 +90,7 @@ stages:
   dependsOn: 'DeployToDev'
   jobs:
     - deployment : 'DeployToProd'
-      environment: 'Dev'
+      environment: 'Prod'
       strategy:
         runOnce:
          deploy:
