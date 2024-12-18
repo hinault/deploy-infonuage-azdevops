@@ -8,10 +8,8 @@ trigger:
 
 variables:
   buildConfiguration: 'Release'
-  serviceConnection : 'az-serviceprincipal'
+  serviceConnection : 'sc-azure'
   artifactName: 'drop'
-  environment: 'h22-developpement'
-  webAppName: 'webapp-h22-dev-122'
 
 stages:
 - stage : 'Build' 
@@ -29,8 +27,19 @@ stages:
   jobs:
   - template: templates/deploy-template.yml
     parameters:
-      environment: $(environment)
+      environment: 'Dev'
       artifactName: $(artifactName)
       serviceConnection: $(serviceConnection)
-      webAppName: $(webAppName)
+      webAppName: 'demo456'
+
+- stage : 'DeployToProd' 
+  displayName: 'Déploiment en Prod'
+  dependsOn: 'DeployToDev'
+  jobs:
+  - template: templates/deploy-template.yml
+    parameters:
+      environment: 'Prod'
+      artifactName: $(artifactName)
+      serviceConnection: $(serviceConnection)
+      webAppName: 'demoprod1245'
 
