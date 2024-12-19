@@ -14,10 +14,19 @@ variables:
   resourceGroupName: 'rg-test-devops'
   location: 'canadacentral'
   templateFile: '**/main.bicep'
-  webAppName: 'webapp-h22-dev-123'
-  webAppNameProd : 'webapp-h22-prod-123'
+  webAppName: 'webapp-a24-dev-123'
+  webAppNameProd : 'webapp-a24-prod-123'
+  sku: 'F1'
 
 steps:
+
+- task: AzureCLI@2
+  inputs:
+    azureSubscription: 'sc-azure'
+    scriptType: 'bash'
+    scriptLocation: 'inlineScript'
+    inlineScript: 'az deployment group create  --'
+  displayName: 'Deploiementressource'
 
 - task: AzureCLI@2
   inputs:
@@ -27,7 +36,7 @@ steps:
     inlineScript: |
       az --version
       az group create --name $(resourceGroupName) --location $(location)
-      az deployment group create --resource-group $(resourceGroupName) --template-file $(templateFile) --parameters appName=$(webAppName)
+      az deployment group create --resource-group $(resourceGroupName) --template-file $(templateFile) --parameters appName=$(webAppName) sku=$(F1)
   displayName: 'Environement de Dev'
   
 - task: AzureCLI@2
@@ -36,5 +45,5 @@ steps:
     scriptType: bash
     scriptLocation: inlineScript
     inlineScript: |
-      az deployment group create --resource-group $(resourceGroupName) --template-file $(templateFile) --parameters appName=$(webAppNameProd)
+      az deployment group create --resource-group $(resourceGroupName) --template-file $(templateFile) --parameters appName=$(webAppNameProd) sku=$(F1)
   displayName: 'Environement de production'
