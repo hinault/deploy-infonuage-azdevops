@@ -10,7 +10,7 @@ pool:
   vmImage: ubuntu-latest
  
 variables:
-  serviceConnection : 'az-serviceprincipal'
+  serviceConnection : 'sc-azure'
   resourceGroupName: 'rg-test-devops'
   location: 'canadacentral'
   templateFile: '**/main.bicep'
@@ -19,15 +19,6 @@ variables:
   sku: 'F1'
 
 steps:
-
-- task: AzureCLI@2
-  inputs:
-    azureSubscription: 'sc-azure'
-    scriptType: 'bash'
-    scriptLocation: 'inlineScript'
-    inlineScript: 'az deployment group create  --'
-  displayName: 'Deploiementressource'
-
 - task: AzureCLI@2
   inputs:
     azureSubscription: $(serviceConnection)
