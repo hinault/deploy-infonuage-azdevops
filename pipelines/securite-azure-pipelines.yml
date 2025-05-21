@@ -10,6 +10,15 @@ pool:
   vmImage: ubuntu-latest
 
 steps:
+- checkout: self
+  fetchDepth: 0
+- task: SonarCloudPrepare@3
+  inputs:
+    SonarQube: 'sc-sonar'
+    organization: 'hinault'
+    scannerMode: 'dotnet'
+    projectKey: 'hinault_H25-SecuriteApplicative'
+    projectName: 'H25-SecuriteApplicative'
 - task: DotNetCoreCLI@2
   inputs:
          command: 'restore'
@@ -42,3 +51,7 @@ steps:
   inputs:
     cwd: '$(System.DefaultWorkingDirectory)'
     projectName: 'DemoSecurite'
+
+- task: SonarCloudAnalyze@3
+  inputs:
+    jdkversion: 'JAVA_HOME_17_X64'
