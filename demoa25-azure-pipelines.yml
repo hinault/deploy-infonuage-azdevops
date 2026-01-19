@@ -83,5 +83,33 @@ stages:
                 deploymentMethod: 'auto'
                displayName: 'Deéploiement dans Azure App Service'
              
-  
+ - stage : 'DeployToProd'
+   displayName: 'Déploiement en Production'
+   pool:
+        vmImage: ubuntu-latest
+   dependsOn: 'DeployToDev'
+   jobs:
+    - deployment: 'DeployToProd'
+      environment: 'Prod'
+      strategy:
+       runOnce:
+         deploy:
+           steps:
+             
+             - task: DownloadPipelineArtifact@2
+               inputs:
+                 buildType: 'current'
+                 artifactName: 'drop'
+                 targetPath: '$(System.ArtifactsDirectory)'
+               displayName: 'Télécharge le package de déploiement'
+            
+             - task: AzureWebApp@1
+               inputs:
+                azureSubscription: 'sc-azure'
+                appType: 'webApp'
+                appName: 'webapp-demo-prod456'
+                package: '$(System.ArtifactsDirectory)/**/*.zip'
+                deploymentMethod: 'auto'
+               displayName: 'Deéploiement dans Azure App Service'
+             
      
