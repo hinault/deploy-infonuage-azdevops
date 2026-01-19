@@ -59,5 +59,29 @@ stages:
    pool:
      vmImage: ubuntu-latest
    dependsOn: 'Build'
+   jobs:
+    - deployment: 'DeployToDev'
+      environment: 'Dev'
+      strategy:
+       runOnce:
+         deploy:
+           steps:
+             
+             - task: DownloadPipelineArtifact@2
+               inputs:
+                 buildType: 'current'
+                 artifactName: 'drop'
+                 targetPath: '$(System.ArtifactsDirectory)'
+               displayName: 'Télécharge le package de déploiement'
+            
+             - task: AzureWebApp@1
+               inputs:
+                azureSubscription: 'sc-azure'
+                appType: 'webApp'
+                appName: 'webapp-demo456'
+                package: '$(System.ArtifactsDirectory)/**/*.zip'
+                deploymentMethod: 'auto'
+               displayName: 'Deéploiement dans Azure App Service'
+             
   
      
