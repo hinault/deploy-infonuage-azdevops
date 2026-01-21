@@ -30,7 +30,7 @@ stages:
       environment: 'Dev'
       artifactName: $(artifactName)
       serviceConnection: $(serviceConnection)
-      webAppName: 'demo456'
+      webAppName: 'webapp-demo456'
 
 - stage : 'DeployToProd' 
   displayName: 'Déploiment en Prod'
@@ -41,5 +41,5 @@ stages:
       environment: 'Prod'
       artifactName: $(artifactName)
       serviceConnection: $(serviceConnection)
-      webAppName: 'demoprod1245'
+      webAppName: 'webapp-demo-prod456'
 
