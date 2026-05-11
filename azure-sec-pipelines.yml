@@ -23,6 +23,22 @@ steps:
     projects: '**/*.csproj'
   displayName: 'Génération de la solution'
 
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'custom'
+    projects: '**/*.csproj'
+    custom: 'list'
+    arguments: 'package --outdated'
+  displayName: 'Packages qui ne sont plus à jour'
+
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'custom'
+    projects: '**/*.csproj'
+    custom: 'list'
+    arguments: 'package --vulnerable'
+  displayName: 'Packages qui ne sont vulnérables'
+
 - task: WhiteSource@21
   inputs:
     cwd: '$(System.DefaultWorkingDirectory)'
